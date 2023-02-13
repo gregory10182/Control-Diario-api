@@ -11,10 +11,6 @@ const MonthSchema = mongoose.Schema({
     Day: { type: Number, required: true },
     GoalAtDay: { type: Number, required: true },
     SelledAtDay: { type: Number, required: true },
-    PercentageAtDay: { type: Number, required: true },
-    TotalPercentage: {type: Number, required: true},
-    GoalDiff: {type: Number, required: true},
-    GoalCorrection: {type: Number, required: true}
   },
 });
 

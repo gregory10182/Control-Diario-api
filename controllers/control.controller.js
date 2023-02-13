@@ -35,18 +35,10 @@ export const CreateMonth = async (req, res) => {
     let Day = 0
     let GoalAtDay= DailyGoal * (Day + 1);
     let SelledAtDay= 0
-    let PercentageAtDay= SelledAtDay / GoalAtDay;
-    let TotalPercentage= SelledAtDay / Goal;
-    let GoalDiff= SelledAtDay - Goal;
-    let GoalCorrection= DailyGoal;
     let Summary = {
       "Day": Day,
       "GoalAtDay": GoalAtDay,
       "SelledAtDay": SelledAtDay,
-      "PercentageAtDay": PercentageAtDay,
-      "TotalPercentage": TotalPercentage,
-      "GoalDiff": GoalDiff,
-      "GoalCorrection": GoalCorrection
     }
 
     const NewMonth = new MonthControl({
@@ -76,15 +68,9 @@ export const DailySale = async (req, res) => {
 
     Month.DailySale[Month.Summary.Day].Venta = req.body.AmountSold;
     Month.DailySale[Month.Summary.Day].Bonificacion = req.body.Bonification
-
     Month.Summary.Day = Month.Summary.Day + 1
-
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
     Month.Summary.SelledAtDay= Math.trunc(Month.DailySale.map(venta => venta.Venta + (venta.Bonificacion / 1.19)).reduce((sum, num) => sum + num));
-    Month.Summary.PercentageAtDay= ((Month.Summary.SelledAtDay / Month.Summary.GoalAtDay).toFixed(4)) * 100;
-    Month.Summary.TotalPercentage= ((Month.Summary.SelledAtDay / Month.Goal).toFixed(4)) * 100;
-    Month.Summary.GoalDiff= Month.Summary.SelledAtDay - Month.Goal;
-    Month.Summary.GoalCorrection= Math.trunc(Math.abs(Month.Summary.GoalDiff) / (MonthDays - Month.Summary.Day));
 
     await MonthControl.findByIdAndUpdate(id, Month);
 
