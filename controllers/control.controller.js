@@ -27,11 +27,14 @@ export const CreateMonth = async (req, res) => {
     const { Month, Year, Goal } = req.body;
     let MonthDays = new Date(Year, Month, 0).getDate();
     let DailyGoal = Math.trunc(Goal / MonthDays);
-    let DailySale = Array(MonthDays).fill(0);
+    let DailySale = Array(MonthDays).fill({
+      "Venta" : 0,
+      "Bonificacion" : 0
+    });
     let _id = Month + "-" + Year
     let Day = 0
     let GoalAtDay= DailyGoal * (Day + 1);
-    let SelledAtDay= DailySale.reduce((sum, num) => sum + num);
+    let SelledAtDay= 0
     let PercentageAtDay= SelledAtDay / GoalAtDay;
     let TotalPercentage= SelledAtDay / Goal;
     let GoalDiff= SelledAtDay - Goal;
@@ -56,9 +59,6 @@ export const CreateMonth = async (req, res) => {
       Summary
     });
 
-
-    
-
     await NewMonth.save();
 
     res.status(201).json(NewMonth);
@@ -74,12 +74,13 @@ export const DailySale = async (req, res) => {
 
     let MonthDays = new Date(Month.Year, Month.Month, 0).getDate(); 
 
-    Month.DailySale[Month.Summary.Day] = req.body.AmountSold;
+    Month.DailySale[Month.Summary.Day].Venta = req.body.AmountSold;
+    Month.DailySale[Month.Summary.Day].Bonificacion = req.body.Bonification
 
     Month.Summary.Day = Month.Summary.Day + 1
 
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
-    Month.Summary.SelledAtDay= Month.DailySale.reduce((sum, num) => sum + num);
+    Month.Summary.SelledAtDay= Math.trunc(Month.DailySale.map(venta => venta.Venta + (venta.Bonificacion / 1.19)).reduce((sum, num) => sum + num));
     Month.Summary.PercentageAtDay= ((Month.Summary.SelledAtDay / Month.Summary.GoalAtDay).toFixed(4)) * 100;
     Month.Summary.TotalPercentage= ((Month.Summary.SelledAtDay / Month.Goal).toFixed(4)) * 100;
     Month.Summary.GoalDiff= Month.Summary.SelledAtDay - Month.Goal;
