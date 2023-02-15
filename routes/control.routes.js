@@ -11,9 +11,9 @@ router.get("/", GetMonths)
 
 router.get("/Month/:id", GetMonth)
 
-router.post("/NewMonth", CreateMonth)
+router.post("/NewMonth/", CreateMonth)
 
-router.put("/DailySale/:id", DailySale)
+router.put("/DailySale/", DailySale)
 
 router.delete("/DeleteMonth/:id", DeleteMonth)
 

@@ -1,16 +1,19 @@
 import { connect } from "./utils/mongoose.js";
 import express from "express";
-import bodyParser from "body-parser";
+import morgan from "morgan"
 import cors from "cors";
 import ControlRoutes from "./routes/control.routes.js"
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(cors());
+
+app.use(express.json());
 
 app.use(ControlRoutes)
 
-app.use(cors());
+app.use(morgan("dev"))
+
 
 async function main() {
   await connect();

@@ -32,7 +32,7 @@ export const CreateMonth = async (req, res) => {
       "Bonificacion" : 0
     });
     let _id = Month + "-" + Year
-    let Day = 0
+    let Day = 1
     let GoalAtDay= DailyGoal * (Day + 1);
     let SelledAtDay= 0
     let Summary = {
@@ -61,24 +61,43 @@ export const CreateMonth = async (req, res) => {
 
 export const DailySale = async (req, res) => {
   try {
-    const { id } = req.params;
-    let Month = await MonthControl.findById(id).exec();
+    let data = req.body;
 
-    let MonthDays = new Date(Month.Year, Month.Month, 0).getDate(); 
+    let Month = await MonthControl.findById(data._id).exec();
 
-    Month.DailySale[Month.Summary.Day].Venta = req.body.AmountSold;
-    Month.DailySale[Month.Summary.Day].Bonificacion = req.body.Bonification
+
+    Month.DailySale = data.DailySale;
     Month.Summary.Day = Month.Summary.Day + 1
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
     Month.Summary.SelledAtDay= Math.trunc(Month.DailySale.map(venta => venta.Venta + (venta.Bonificacion / 1.19)).reduce((sum, num) => sum + num));
 
-    await MonthControl.findByIdAndUpdate(id, Month);
+
+    
+    await Month.save();
+
+    console.log(Month);
 
     res.status(200).json(Month)
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
+
+// export const DailySale = async (req, res) => {
+//   try {
+
+
+    
+//     const Month = req.body;
+
+//     let updated = await MonthControl.findByIdAndUpdate(Month._id, Month)
+
+//     console.log(updated)
+//     res.status(200).json(updated)
+//   } catch (error) {
+//     res.status(404).json({ message: error.message });
+//   }
+// };
 
 
 export const DeleteMonth = async (req, res) => {
