@@ -59,15 +59,16 @@ export const CreateMonth = async (req, res) => {
   }
 };
 
+
 export const DailySale = async (req, res) => {
   try {
     let data = req.body;
 
     let Month = await MonthControl.findById(data._id).exec();
 
-
+    let Day = new Date().getDate()
     Month.DailySale = data.DailySale;
-    Month.Summary.Day = Month.Summary.Day + 1
+    Month.Summary.Day = Day - 1;
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
     Month.Summary.SelledAtDay= Math.trunc(Month.DailySale.map(venta => venta.Venta + (venta.Bonificacion / 1.19)).reduce((sum, num) => sum + num));
 
@@ -83,21 +84,22 @@ export const DailySale = async (req, res) => {
   }
 };
 
-// export const DailySale = async (req, res) => {
-//   try {
 
+export const UpdateDay = async (req, res) => {
+  try{
+    let Month = await MonthControl.findById(req.params.id).exec();
 
-    
-//     const Month = req.body;
+    let Day = new Date().getDate();
+    Month.Summary.Day = Day - 1;
+    Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
 
-//     let updated = await MonthControl.findByIdAndUpdate(Month._id, Month)
+    await Month.save();
 
-//     console.log(updated)
-//     res.status(200).json(updated)
-//   } catch (error) {
-//     res.status(404).json({ message: error.message });
-//   }
-// };
+    res.status(200).json(Month)
+  } catch (error){
+    res.status(404).json({ message: error.message });
+  }
+}
 
 
 export const DeleteMonth = async (req, res) => {
