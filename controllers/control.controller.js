@@ -69,7 +69,6 @@ export const DailySale = async (req, res) => {
     let Day = new Date()
 
     if(Day.getMonth() + 1 > parseInt(Month.Month)){
-      console.log("hola")
       Month.Summary.Day = new Date(Month.Year, Month.Month, 0).getDate()
     }else{
       Month.Summary.Day = Day.getDate() - 1
@@ -97,7 +96,6 @@ export const UpdateDay = async (req, res) => {
     let Day = new Date();
 
     if(Day.getMonth() + 1 > parseInt(Month.Month)){
-      console.log("hola")
       Month.Summary.Day = new Date(Month.Year, Month.Month, 0).getDate()
     }else{
       Month.Summary.Day = Day.getDate() - 1
