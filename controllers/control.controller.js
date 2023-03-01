@@ -66,17 +66,22 @@ export const DailySale = async (req, res) => {
 
     let Month = await MonthControl.findById(data._id).exec();
 
-    let Day = new Date().getDate()
+    let Day = new Date()
+
+    if(Day.getMonth() + 1 > parseInt(Month.Month)){
+      console.log("hola")
+      Month.Summary.Day = new Date(Month.Year, Month.Month, 0).getDate()
+    }else{
+      Month.Summary.Day = Day.getDate() - 1
+    }
+
     Month.DailySale = data.DailySale;
-    Month.Summary.Day = Day - 1;
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
     Month.Summary.SelledAtDay= Math.trunc(Month.DailySale.map(venta => venta.Venta + (venta.Bonificacion / 1.19)).reduce((sum, num) => sum + num));
 
 
     
     await Month.save();
-
-    console.log(Month);
 
     res.status(200).json(Month)
   } catch (error) {
@@ -89,8 +94,15 @@ export const UpdateDay = async (req, res) => {
   try{
     let Month = await MonthControl.findById(req.params.id).exec();
 
-    let Day = new Date().getDate();
-    Month.Summary.Day = Day - 1;
+    let Day = new Date();
+
+    if(Day.getMonth() + 1 > parseInt(Month.Month)){
+      console.log("hola")
+      Month.Summary.Day = new Date(Month.Year, Month.Month, 0).getDate()
+    }else{
+      Month.Summary.Day = Day.getDate() - 1
+    }
+
     Month.Summary.GoalAtDay = Month.DailyGoal * Month.Summary.Day
 
     await Month.save();
