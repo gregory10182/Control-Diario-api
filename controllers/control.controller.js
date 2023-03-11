@@ -53,7 +53,7 @@ export const CreateMonth = async (req, res) => {
 
     await NewMonth.save();
 
-    res.status(201).message("Mes Creado Exitosamente");
+    res.status(201).send("Mes Creado Exitosamente");
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -82,7 +82,7 @@ export const DailySale = async (req, res) => {
     
     await Month.save();
 
-    res.status(200).message("Venta Actualizada Exitosamente")
+    res.status(200).send("Venta Actualizada Exitosamente")
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
