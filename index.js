@@ -12,6 +12,12 @@ app.use(express.json());
 
 app.use(ControlRoutes)
 
+app.use((err, req, res, next) => {
+  console.error(err)
+  console.log(err.name)
+  res.status(400).end()
+})
+
 app.use(morgan("dev"))
 
 
