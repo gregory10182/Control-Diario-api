@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose")
 
 const MonthSchema = mongoose.Schema({
   _id: { type: String, required: true },
@@ -14,4 +14,4 @@ const MonthSchema = mongoose.Schema({
   },
 });
 
-export default mongoose.model("MonthControl", MonthSchema);
+module.exports = mongoose.model("MonthDev", MonthSchema);
