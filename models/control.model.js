@@ -14,4 +14,4 @@ const MonthSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("MonthDev", MonthSchema);
+module.exports = mongoose.model("MonthControl", MonthSchema);

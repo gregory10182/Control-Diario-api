@@ -1,20 +1,19 @@
-import MonthControl from "../models/control.model.js";
+const MonthControl = require("../models/control.model.js")
 
-export const GetMonths = (req, res, next) => {
-  // try {
-  //   const Data = await MonthControl.find();
-  //   console.log(Data);
-  //   res.status(200).json(Data);
-  // } catch (error) {
-  //   res.status(404).json({ message: error.message });
-  // }
+const GetMonths = async (req, res, next) => {
+  try {
+    const Data = await MonthControl.find();
+    res.status(200).json(Data);
+  } catch (error) {
+    next(error);
+  }
 
-  MonthControl.find()
-  .then(result => res.json(result))
-  .catch(err => next(err))
+  // MonthControl.find()
+  // .then(result => res.json(result))
+  // .catch(err => next(err))
 };
 
-export const GetMonth = (req, res, next) => {
+const GetMonth = (req, res, next) => {
   // try {
   //   const { id } = req.params
   //   const Month = await MonthControl.findById(id).exec()
@@ -38,7 +37,7 @@ export const GetMonth = (req, res, next) => {
 }
 
 
-export const CreateMonth = (req, res, next) => {
+const CreateMonth = (req, res, next) => {
   
   const { Month, Year, Goal } = req.body;
   let MonthDays = new Date(Year, Month, 0).getDate();
@@ -76,7 +75,7 @@ export const CreateMonth = (req, res, next) => {
 };
 
 
-export const DailySale = (req, res, next) => {
+const DailySale = (req, res, next) => {
   
   // let data = req.body;
 
@@ -128,7 +127,7 @@ export const DailySale = (req, res, next) => {
 };
 
 
-export const UpdateDay = (req, res, next) => {
+const UpdateDay = (req, res, next) => {
 
   // let Month = await MonthControl.findById(req.params.id).exec();
 
@@ -174,17 +173,24 @@ export const UpdateDay = (req, res, next) => {
 }
 
 
-export const DeleteMonth = (req, res, next) => {
-  // try {
-  //   const { id } = req.params
-  //   let todelete = await MonthControl.findByIdAndDelete(id)
+const DeleteMonth = async(req, res, next) => {
+  try {
+    const { id } = req.params
+    let todelete = await MonthControl.findByIdAndDelete(id)
+    console.log(todelete)
+    if(todelete === null){
+      res.status(404).json({ message : "ID no encontrada" })
+    }
 
-  //   res.status(200).json(todelete)
-  // } catch (error) {
-  //   res.status(404).json({ message : error.message })
-  // }
+    res.status(204).end()
+  }catch(err){
+    next(err)
+  }
 
-  MonthControl.findByIdAndDelete(req.params.id)
-  .then(result => res.json(result))
-  .catch(err => next(err))
+  // MonthControl.findByIdAndRemove(req.params.id)
+  // .then(result => res.status(204).json(result))
+  // .catch(err => next(err))
 }
+
+
+module.exports = { GetMonths, GetMonth, CreateMonth, DailySale, UpdateDay, DeleteMonth } 
