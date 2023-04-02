@@ -1,4 +1,7 @@
 const supertest = require("supertest")
+const User = require('../models/user.model')
+const month = require("../models/control.model")
+const bcrypt = require('bcrypt')
 const app = require("../index")
 
 const api = supertest(app);
@@ -10,7 +13,7 @@ const initialMonths = [
             "GoalAtDay": 39676644,
             "SelledAtDay": 38538903
         },
-        "_id": "2-2023",
+        "mid": "2-2023",
         "Month": 2,
         "Year": 2023,
         "Goal": 39676651,
@@ -129,7 +132,6 @@ const initialMonths = [
                 "Bonificacion": 1787558
             }
         ],
-        "__v": 35
     },
     {
         "Summary": {
@@ -137,7 +139,7 @@ const initialMonths = [
             "GoalAtDay": 28476580,
             "SelledAtDay": 23558563
         },
-        "_id": "3-2023",
+        "mid": "3-2023",
         "Month": 3,
         "Year": 2023,
         "Goal": 44138720,
@@ -267,10 +269,35 @@ const initialMonths = [
                 "Venta": 0,
                 "Bonificacion": 0
             }
-        ],
-        "__v": 15
+        ]
     }
   ]
+
+
+const Before = async() => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('asdqwe', 10)
+
+    const user = new User({ local: "1010", passwordHash })
+
+    const savedUser = await user.save()
+
+    initialMonths[0].user = savedUser._id
+    initialMonths[1].user = savedUser._id
+
+    await month.deleteMany({})
+
+    const month1 = new month(initialMonths[0])
+    await month1.save()
+    const month2 = new month(initialMonths[1])
+    await month2.save()
+
+    user.months = user.months.concat(month1._id)
+    user.months = user.months.concat(month2._id)
+
+    await user.save()
+}
 
 const getGoalFromMonths = async() => {
     const result = await api.get('/')
@@ -282,5 +309,6 @@ const getGoalFromMonths = async() => {
 module.exports =   { 
     initialMonths, 
     api,
-    getGoalFromMonths
+    getGoalFromMonths,
+    Before
 }

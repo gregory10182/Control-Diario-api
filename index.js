@@ -10,13 +10,10 @@ require("./utils/mongoose")
 const express = require("express")
 const morgan = require("morgan")
 const cors = require("cors")
-// const ControlRoutes = require("./routes/control.routes")
-const { GetMonths,
-  GetMonth,
-  CreateMonth,
-  DailySale,
-  UpdateDay,
-  DeleteMonth } = require("./controllers/control.controller")  
+const handleErrors = require("./middleware/handleErrors")
+const monthRouter = require("./controllers/control.controller")  
+const usersRouter = require("./controllers/users.controller")
+const loginRouter = require("./controllers/login.controller")
 
 const app = express();
 
@@ -24,23 +21,13 @@ app.use(cors());
 
 app.use(express.json());
 
-app.get("/", GetMonths)
+app.use(monthRouter)
 
-app.get("/Month/:id", GetMonth)
+app.use(usersRouter)
 
-app.post("/NewMonth/", CreateMonth)
+app.use(loginRouter)
 
-app.put("/DailySale/", DailySale)
-
-app.put("/UpdateDay/:id", UpdateDay)
-
-app.delete("/DeleteMonth/:id", DeleteMonth)
-
-app.use((err, req, res, next) => {
-  console.error(err)
-  console.log(err.name)
-  res.status(400).end()
-})
+app.use(handleErrors)
 
 app.use(morgan("dev"))
 

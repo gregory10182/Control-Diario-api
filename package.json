@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx nodemon server.js",
-    "test": "cross-env NODE_ENV=test jest --verbose --silent",
+    "test": "cross-env NODE_ENV=test jest --verbose --silent test/user.test.js",
     "test:watch": "npm run test -- --watch"
   },
   "keywords": [],
@@ -18,7 +18,9 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.1",
+    "mongoose-unique-validator": "^3.1.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20"
   },

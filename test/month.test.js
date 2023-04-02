@@ -8,12 +8,7 @@ const { initialMonths, api, getGoalFromMonths } = require("./helpers")
 
 
 beforeEach(async () => { 
-  await month.deleteMany({})
-  console.log(initialMonths)
-  const month1 = new month(initialMonths[0])
-  await month1.save()
-  const month2 = new month(initialMonths[1])
-  await month2.save()
+  await Before();
 })
 
 
