@@ -15,7 +15,6 @@ const MonthSchema = Schema({
   user: {type: Schema.Types.ObjectId, ref: "UserDev" }
 });
 
-
 MonthSchema.set("toJSON", {
   transform: (document, returnedObject) =>{
       returnedObject.id = returnedObject._id

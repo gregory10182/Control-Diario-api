@@ -12,21 +12,28 @@ usersRouter.get("/Users", async (req, res) => {
   }
 });
 
-usersRouter.post("/CreateUser", async (req, res) => {
+usersRouter.post("/CreateUser", (req, res, next) => {
   const { body } = req;
   const { local, password } = body;
 
   const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
+  
+  bcrypt.hash(password, saltRounds)
+  .then((passwordHash) => {
 
-  const user = new User({
-    local,
-    passwordHash
+    const user = new User({
+      local,
+      passwordHash
+    });
+
+   return user.save()
+  })
+  .then((savedUser) => {
+    res.status(201).json(savedUser);
+  }).catch((err) => {
+    next(err)
   });
 
-  const saverUser = await user.save();
-
-  res.status(201).json(saverUser);
 });
 
 module.exports = usersRouter;
