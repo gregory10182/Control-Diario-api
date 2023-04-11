@@ -21,7 +21,7 @@ usersRouter.post("/CreateUser", async (req, res) => {
 
   const user = new User({
     local,
-    passwordHash,
+    passwordHash
   });
 
   const saverUser = await user.save();

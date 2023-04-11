@@ -1,7 +1,8 @@
 const monthRouter = require("express").Router();
 const User = require("../models/user.model");
 const MonthControl = require("../models/control.model.js");
-const userExtractor = require("../middleware/userExtractor")
+const userExtractor = require("../middleware/userExtractor");
+const month = require("../models/control.model.js");
 
 monthRouter.get("/", userExtractor, (req, res, next) => {
 
@@ -29,6 +30,18 @@ monthRouter.get("/Month/:id", userExtractor, (req, res, next) => {
     })
     .catch(err => next(err));
 });
+
+// Agregando el campo de recargas en el dailySale de los meses ya creados
+// monthRouter.put("/repair/", userExtractor, (req, res, next) => {
+//   MonthControl.find({})
+//   .then(result => {
+//     result.forEach(month => {
+//       return(month.DailySale.map(day => day.Recargas = 0))
+//     })
+//     res.json(result)
+//   })
+
+// })
 
 monthRouter.post("/NewMonth/", userExtractor, (req, res, next) => {
   // try {
@@ -80,11 +93,19 @@ monthRouter.post("/NewMonth/", userExtractor, (req, res, next) => {
   const { Uid } = req
 
   const { Month, Year, Goal } = req.body;
+
+  if(Month === undefined || Year === undefined){
+    next({
+      name: "ValidationError"
+    })
+  }
+  
   let MonthDays = new Date(Year, Month, 0).getDate();
   let DailyGoal = Math.trunc(Goal / MonthDays);
   let DailySale = Array(MonthDays).fill({
     Venta: 0,
     Bonificacion: 0,
+    Recargas: 0,
   });
   let mid = Month + "-" + Year;
   let Day = 1;
@@ -238,6 +259,7 @@ monthRouter.delete("/DeleteMonth/:id", userExtractor, (req, res, next) => {
   .then(() => {
     res.status(200).send("Mes Eliminado Correctamente")
   })
+  .catch(err => next(err))
 });
 
 module.exports = monthRouter;

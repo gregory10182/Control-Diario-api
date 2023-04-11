@@ -1,29 +1,39 @@
 const mongoose = require("mongoose");
 
 const month = require("../models/control.model")
-const { initialMonths, api, getGoalFromMonths } = require("./helpers")
+const { initialMonths, initialUser, api, getGoalFromMonths, getAllMonths, Before, getToken} = require("./helpers")
 
 
-
+let token
 
 
 beforeEach(async () => { 
   await Before();
+  
+  token = await getToken()
+
+  
 })
 
 
 
 describe("Testing '/' route", () => {
+  
 
-  test("should be running", async () => {
+  test("should be running", async() => {
+
     await api
     .get("/")
+    .set('Authorization', 'Bearer ' + token)
     .expect(200)
     .expect("content-type", /application\/json/)
   });
 
   test("There are two months", async () => {
-    const result = await api.get("/")
+
+    const result = await api
+    .get("/")
+    .set('Authorization', 'Bearer ' + token)
     
     expect(result.body).toHaveLength(initialMonths.length)
   });
@@ -31,6 +41,7 @@ describe("Testing '/' route", () => {
   test("the first month goal is the correct", async () => {
 
     const goals = await getGoalFromMonths()
+
     expect(goals).toContain(initialMonths[0].Goal)
   });
 })
@@ -48,8 +59,9 @@ describe("testing '/NewMonth' route", () => {
 
     await api
     .post('/NewMonth')
+    .set('Authorization', 'Bearer ' + token)
     .send(newMonth)
-    .expect(200)
+    .expect(201)
     .expect('Content-Type', /text\/html/)
 
     const goals = await getGoalFromMonths()
@@ -67,10 +79,11 @@ describe("testing '/NewMonth' route", () => {
 
     await api
     .post('/NewMonth')
+    .set('Authorization', 'Bearer ' + token)
     .send(newMonth)
-    .expect(400)
+    .expect(409)
 
-    const result = await api.get('/')
+    const result = await getAllMonths()
 
     expect(result.body).toHaveLength(initialMonths.length)
   })
@@ -84,10 +97,11 @@ describe("testing '/NewMonth' route", () => {
 
     await api
     .post('/NewMonth')
+    .set('Authorization', 'Bearer ' + token)
     .send(newMonth)
-    .expect(400)
+    .expect(409)
 
-    const result = await api.get('/')
+    const result = await getAllMonths()
 
     expect(result.body).toHaveLength(initialMonths.length)
   })
@@ -101,10 +115,11 @@ describe("testing '/NewMonth' route", () => {
 
     await api
     .post('/NewMonth')
+    .set('Authorization', 'Bearer ' + token)
     .send(newMonth)
-    .expect(400)
+    .expect(409)
 
-    const result = await api.get('/')
+    const result = await getAllMonths()
 
     expect(result.body).toHaveLength(initialMonths.length)
   })
@@ -115,38 +130,49 @@ describe("testing '/NewMonth' route", () => {
 describe("testing '/DeleteMonth' route", () => {
 
   test('Delete a month with a valid id', async() => {
+
+    const monthsBefore = await getAllMonths()
+
     await api
-    .delete('/DeleteMonth/' + initialMonths[0]._id)
-    .expect(204)
+    .delete('/DeleteMonth/' + monthsBefore.body[0].id)
+    .set('Authorization', 'Bearer ' + token)
+    .expect(200)
+    .expect("Content-Type", /text\/html/)
 
-    const result = await api.get('/')
+    const monthsAfter = await getAllMonths()
 
-    expect(result.body).toHaveLength(initialMonths.length - 1)
+    expect(monthsAfter.body).toHaveLength(monthsBefore.body.length - 1)
     
   })
 
   test('cant Delete a month without a valid id', async() => {
     await api
     .delete('/DeleteMonth/' + '10-2023')
+    .set('Authorization', 'Bearer ' + token)
     .expect(404)
     .expect("Content-Type", /application\/json/)
   
-    const result = await api.get('/')
+    const result = await getAllMonths()
   
     expect(result.body).toHaveLength(initialMonths.length)
     
   })
 
   test('deleting the rigth month', async() => {
-    await api
-    .delete('/DeleteMonth/' + initialMonths[0]._id)
-    .expect(204)
-  
-    const result = await api.get('/')
 
-    const ids = result.body.map(month => month._id)
+    const monthsBefore = await getAllMonths()
+
+    await api
+    .delete('/DeleteMonth/' + monthsBefore.body[0].id)
+    .set('Authorization', 'Bearer ' + token)
+    .expect(200)
+    .expect("Content-Type", /text\/html/)
   
-    expect(ids).not.toContain(initialMonths[0]._id)
+    const monthsAfter = await getAllMonths()
+
+    const ids = monthsAfter.body.map(month => month.id)
+  
+    expect(ids).not.toContain(monthsBefore.body[0].id)
     
   })
 })

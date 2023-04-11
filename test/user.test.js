@@ -3,9 +3,9 @@ const User = require('../models/user.model')
 const mongoose = require('mongoose')
 
 describe("Creating a new user", () => {
-    beforeEach(async () => {
-        await Before();
-    })
+    // beforeEach(async () => {
+    //     await Before();
+    // })
 
     test('Works as expected creating a fresh username', async () => { 
         const usersDB = await User.find({})
