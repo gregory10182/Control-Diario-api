@@ -1,8 +1,7 @@
 const { Schema, model } = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator")
 
 const MonthSchema = Schema({
-  mid: { type: String, required: true, unique: true },
+  mid: { type: String, required: true},
   Month: { type: Number, required: true },
   Year: { type: Number, required: true },
   Goal: { type: Number, required: true },
@@ -16,7 +15,6 @@ const MonthSchema = Schema({
   user: {type: Schema.Types.ObjectId, ref: "UserDev" }
 });
 
-MonthSchema.plugin(uniqueValidator)
 
 MonthSchema.set("toJSON", {
   transform: (document, returnedObject) =>{
