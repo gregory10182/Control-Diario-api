@@ -187,7 +187,7 @@ monthRouter.put("/DailySale/", userExtractor, (req, res, next) => {
   data.Summary.GoalAtDay = data.DailyGoal * data.Summary.Day;
   data.Summary.SelledAtDay = Math.trunc(
     data.DailySale.map(
-      (venta) => venta.Venta + venta.Bonificacion / 1.19
+      (venta) => venta.Venta + (venta.Bonificacion / 1.19) + venta.Recargas
     ).reduce((sum, num) => sum + num)
   );
 
