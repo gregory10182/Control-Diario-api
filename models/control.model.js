@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const MonthSchema = Schema({
-  mid: { type: String, required: true},
+  mid: { type: String, required: true },
   Month: { type: Number, required: true },
   Year: { type: Number, required: true },
   Goal: { type: Number, required: true },
@@ -12,17 +12,17 @@ const MonthSchema = Schema({
     GoalAtDay: { type: Number, required: true },
     SelledAtDay: { type: Number, required: true },
   },
-  user: {type: Schema.Types.ObjectId, ref: "UserDev" }
+  user: { type: Schema.Types.ObjectId, ref: "UserDev" },
 });
 
 MonthSchema.set("toJSON", {
-  transform: (document, returnedObject) =>{
-      returnedObject.id = returnedObject._id
-      delete returnedObject._id
-      delete returnedObject.__v
-  }
-})
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 const month = model("MonthDev", MonthSchema);
 
-module.exports =  month
+module.exports = month;
