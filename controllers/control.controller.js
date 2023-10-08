@@ -46,6 +46,7 @@ monthRouter.post("/NewMonth/", userExtractor, (req, res, next) => {
     Venta: 0,
     Bonificacion: 0,
     Recargas: 0,
+    Festivo: false,
   });
   let mid = Month + "-" + Year;
   let Day = 1;
